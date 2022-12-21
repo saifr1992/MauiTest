@@ -1,4 +1,5 @@
-﻿using MauiTestApp.Interface;
+﻿using MauiTestApp.Service;
+using MauiTestApp.ViewModels;
 using MauiTestApp.Views;
 
 namespace MauiTestApp;
@@ -16,15 +17,11 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
-
-        builder.Services.AddSingleton<IPlatformDiTestService, PlatformDiTestService>();
-
-        #region Pages
-        ///HomeMainPage
-        builder.Services.AddTransient<HomeMainPage>();
-        #endregion
-
-        MauiApp mauiApp = builder.Build();
+        MauiApp mauiApp = builder
+            .RegisterAppServices()
+            .RegisterViewModels()
+            .RegisterViews()
+            .Build();
         mauiApp.Services.UseResolver();
         return mauiApp;
     }
@@ -32,6 +29,27 @@ public static class MauiProgram
     public static void UseResolver(this IServiceProvider serviceProvider)
     {
         Resolver.RegisterServiceProvider(serviceProvider);
+    }
+
+    public static MauiAppBuilder RegisterAppServices(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<ISettingsService, SettingsService>();
+        mauiAppBuilder.Services.AddSingleton<INavigationService, MauiNavigationService>();
+        return mauiAppBuilder;
+    }
+
+    public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<HomeMainPageViewModel>();
+        mauiAppBuilder.Services.AddTransient<ManageMainPageViewModel>();
+        return mauiAppBuilder;
+    }
+
+    public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddTransient<HomeMainPage>();
+        mauiAppBuilder.Services.AddTransient<ManageMainPage>();
+        return mauiAppBuilder;
     }
 }
 

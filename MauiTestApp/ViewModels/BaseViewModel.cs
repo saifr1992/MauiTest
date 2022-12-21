@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace MauiTestApp.ViewModels
 {
-	public class BaseViewModel : INotifyPropertyChanged
+	public class BaseViewModel : INotifyPropertyChanged, IDisposable
     {
         #region Private Properties
 
@@ -12,6 +12,10 @@ namespace MauiTestApp.ViewModels
 
         #region Public Properties
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public virtual void Dispose()
+        {
+        }
         #endregion
 
         #region Command
